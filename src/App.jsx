@@ -2,11 +2,11 @@
 
 import React from "react";
 import GanttChart from "./components/GanttChart";
+import "./App.css";
 
 function App() {
   return (
     <div className="app-container">
-      <h1>Gestión de Proyectos</h1>
       <GanttChart />
     </div>
   );

@@ -7,12 +7,12 @@ const GanttChart = () => {
 
   useEffect(() => {
     gantt.init(ganttContainer.current);
-    
+
     fetch("http://localhost:4000/tasks")
       .then((response) => response.json())
       .then((data) => {
-        gantt.parse(data); 
-        gantt.setSizes(); // Ajusta el tamaño del gantt
+        gantt.parse(data);
+        gantt.setSizes();
       })
       .catch((error) => console.error("Error al cargar tareas:", error));
 
