@@ -1,20 +1,20 @@
 import React, { useEffect, useRef } from "react";
 import "dhtmlx-gantt/codebase/dhtmlxgantt.css";
 import gantt from "dhtmlx-gantt";
-import "../App.jsx"
+import "../App.jsx";
 import { getTasks, createTask, updateTask, deleteTask } from "../services/service.jsx";
 
 const GanttChart = () => {
   const ganttContainer = useRef(null);
-
+  const isTaskBeingAdded = useRef(false);
   useEffect(() => {
     gantt.init(ganttContainer.current);
     gantt.render();
 
-    // Eliminacion de eventos previos
+    // Evitar eventos duplicados
     gantt.detachAllEvents();
 
-    // Configuracion de la lightbox object
+    // Configuración de la lightbox
     gantt.config.lightbox.sections = [
       { name: "text", height: 30, map_to: "text", type: "textarea" },
       {
@@ -29,34 +29,45 @@ const GanttChart = () => {
       { name: "time", type: "duration", map_to: "auto" },
     ];
 
-    // Carga de datos
+    // Carga de datos desde la API
     getTasks().then((tasks) => {
-      gantt.clearAll(); // Eliminacion de duplicados
+      gantt.clearAll();
       gantt.parse({ data: tasks });
     });
 
-    // Envio de la creacion de la tarea a la base de datos
-    gantt.attachEvent("onAfterTaskAdd", (id, task) => {
+    // Creacion de tasks
+    gantt.attachEvent("onAfterTaskAdd", async (id, task) => {
+      if (isTaskBeingAdded.current) return;
+      isTaskBeingAdded.current = true;
+
       console.log("Tarea Creada:", task);
 
-      // Asignacion del Id autoincrementado en el campo 'parent'
       const parentId = task.parent && gantt.getTask(task.parent) ? task.parent : 0;
 
-      createTask({
-        text: task.text,
-        start_date: task.start_date,
-        duration: task.duration,
-        parent: parentId,
-        type: task.type || "task",
-      }).then((data) => {
-        console.log("Tarea creada en la base:", data);
-        if (data.task?.id) {
-          gantt.changeTaskId(id, data.task.id); // Asignacion del ID autoincrementado desde el backend
+      try {
+        const response = await createTask({
+          text: task.text,
+          start_date: task.start_date,
+          duration: task.duration,
+          parent: parentId,
+          type: task.type || "task",
+        });
+
+        console.log("Tarea creada en la base:", response);
+
+        if (response.task?.id) {
+          gantt.changeTaskId(id, response.task.id); // Asignar ID correcto desde backend
         }
-      });
+      } catch (error) {
+        console.error("Error al crear tarea:", error);
+      }
+
+      setTimeout(() => {
+        isTaskBeingAdded.current = false;
+      }, 500);
     });
 
-    // Envio de la actualizacion de la tarea a la base de datos
+    // Actualizacion de tasks
     gantt.attachEvent("onAfterTaskUpdate", (id, task) => {
       updateTask(id, {
         text: task.text,
@@ -67,7 +78,7 @@ const GanttChart = () => {
       }).then((data) => console.log("Tarea actualizada:", data));
     });
 
-    // Envio de la eliminacion de la tarea a la base de datos
+    // Eliminacion de task
     gantt.attachEvent("onAfterTaskDelete", (id) => {
       deleteTask(id).then((data) => console.log("Tarea eliminada:", data));
     });

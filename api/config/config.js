@@ -1,10 +1,14 @@
-// Database connection setup
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "./database.sqlite", // Archivo donde se guardarán los datos
-  logging: false, // Desactivar logs de SQL
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: "postgres",
+  logging: false, // Desactiva logs de SQL en consola (opcional)
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // Necesario en Railway para evitar errores SSL
+    },
+  },
 });
 
 module.exports = sequelize;

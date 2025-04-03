@@ -11,7 +11,10 @@ app.use(cors());
 app.use(express.json());
 
 // Sincronizar base de datos
-sequelize.sync().then(() => console.log("Base de datos SQLite conectada"));
+sequelize.sync({ alter: true }) // O usar force: true si deseas borrar y recrear
+  .then(() => console.log("Base de datos sincronizada con PostgreSQL en Railway"))
+  .catch((error) => console.error("Error al sincronizar la base de datos:", error));
+
 
 // Ruta solicitudes CRUD
 app.use("/tasks", taskRoutes);
