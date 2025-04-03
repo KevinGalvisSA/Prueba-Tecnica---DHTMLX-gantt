@@ -48,22 +48,38 @@ Este proyecto consiste en la implementación de un diagrama de Gantt en React ut
 
 ## 4. Estructura del Proyecto
 ```
-/root
-│── /frontend (React con Vite)
-│── /backend (Node.js con Express)
-│   │── /config (Configuración de Sequelize)
-│   │── /controllers (Controladores para tareas)
-│   │── /models (Modelos de Sequelize)
-│   │── /routes (Rutas del API REST)
-│   └── server.js (Archivo principal del backend)
-└── README.md (Documentación del proyecto)
+📦 Prueba Tecnica - DHTMLX gantt
+ ├── 📂 api
+ │   ├── 📂 config
+ │   ├── 📂 controllers
+ │   ├── 📂 models
+ │   ├── 📂 routes
+ │   ├── 📜 server.js
+ ├── 📂 node_modules
+ ├── 📂 public
+ ├── 📂 src
+ │   ├── 📂 assets
+ │   ├── 📂 components
+ │   ├── 📂 services
+ │   ├── 📂 styles
+ │   ├── 📜 App.jsx
+ │   ├── 📜 main.jsx
+ ├── 📜 .envTemplate
+ ├── 📜 .gitignore
+ ├── 📜 eslint.config.js
+ ├── 📜 index.html
+ ├── 📜 package-lock.json
+ ├── 📜 package.json
+ ├── 📜 README.md
+ ├── 📜 vite.config.js
+
 ```
 
 ---
 
 ## 5. Instalación y Configuración
 
-### Instalación del Backend
+### Clonación e Instalación
 1. Clonar el repositorio:
    ```bash
    git clone https://github.com/KevinGalvisSA/Prueba-Tecnica---DHTMLX-gantt
@@ -72,25 +88,20 @@ Este proyecto consiste en la implementación de un diagrama de Gantt en React ut
    ```bash
    npm install
    ```
-3. Configurar la base de datos en el archivo `.env`:
+3. (PARA EFECTOS DE EVALUACION) Configurar la base de datos en el archivo `.env`:
    ```env
-   DATABASE_URL=postgres://usuario:password@localhost:5432/nombre_bd
+   DB_USER=
+   DB_PASSWORD=
+   DB_HOST=
+   DB_PORT=
+   DB_NAME=
+   DB_DIALECT=
    ```
 4. Ejecutar el backend:
    ```bash
-   npm start
+   npm run api
    ```
-
-### Instalación del Frontend
-1. Ir a la carpeta del frontend:
-   ```bash
-   cd frontend
-   ```
-2. Instalar dependencias:
-   ```bash
-   npm install
-   ```
-3. Ejecutar el frontend:
+5. Ejecutar el frontend:
    ```bash
    npm run dev
    ```
