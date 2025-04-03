@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import "dhtmlx-gantt/codebase/dhtmlxgantt.css";
 import gantt from "dhtmlx-gantt";
 import "../App.jsx"
+import { getTasks, createTask, updateTask, deleteTask } from "../services/service.jsx";
 
 const GanttChart = () => {
   const ganttContainer = useRef(null);
@@ -29,64 +30,46 @@ const GanttChart = () => {
     ];
 
     // Carga de datos
-    fetch("http://localhost:4000/tasks")
-      .then((response) => response.json())
-      .then((data) => {
-        gantt.clearAll(); // Eliminacion de duplicados
-        gantt.parse(data);
-      })
-      .catch((error) => console.error("Error al cargar tareas:", error));
+    getTasks().then((tasks) => {
+      gantt.clearAll(); // Eliminacion de duplicados
+      gantt.parse({ data: tasks });
+    });
 
     // Envio de la creacion de la tarea a la base de datos
     gantt.attachEvent("onAfterTaskAdd", (id, task) => {
       console.log("Tarea Creada:", task);
-      fetch("http://localhost:4000/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: task.text,
-          start_date: task.start_date,
-          duration: task.duration,
-          parent: task.parent,
-          type: task.type || "task",
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Tarea creada en la base:", data);
-          if (data.data?.id) {
-            gantt.changeTaskId(id, data.data.id);
-          }
-        })
-        .catch((error) => console.error("Error al crear tarea:", error));
+
+      // Asignacion del Id autoincrementado en el campo 'parent'
+      const parentId = task.parent && gantt.getTask(task.parent) ? task.parent : 0;
+
+      createTask({
+        text: task.text,
+        start_date: task.start_date,
+        duration: task.duration,
+        parent: parentId,
+        type: task.type || "task",
+      }).then((data) => {
+        console.log("Tarea creada en la base:", data);
+        if (data.task?.id) {
+          gantt.changeTaskId(id, data.task.id); // Asignacion del ID autoincrementado desde el backend
+        }
+      });
     });
 
     // Envio de la actualizacion de la tarea a la base de datos
     gantt.attachEvent("onAfterTaskUpdate", (id, task) => {
-      fetch(`http://localhost:4000/tasks/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: task.text,
-          start_date: task.start_date,
-          duration: task.duration,
-          parent: task.parent,
-          type: task.type,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => console.log("Tarea actualizada:", data))
-        .catch((error) => console.error("Error al actualizar tarea:", error));
+      updateTask(id, {
+        text: task.text,
+        start_date: task.start_date,
+        duration: task.duration,
+        parent: task.parent,
+        type: task.type,
+      }).then((data) => console.log("Tarea actualizada:", data));
     });
 
     // Envio de la eliminacion de la tarea a la base de datos
     gantt.attachEvent("onAfterTaskDelete", (id) => {
-      fetch(`http://localhost:4000/tasks/${id}`, {
-        method: "DELETE",
-      })
-        .then((response) => response.json())
-        .then((data) => console.log("Tarea eliminada:", data))
-        .catch((error) => console.error("Error al eliminar tarea:", error));
+      deleteTask(id).then((data) => console.log("Tarea eliminada:", data));
     });
 
     return () => {

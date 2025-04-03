@@ -2,7 +2,7 @@
 
 import React from "react";
 import GanttChart from "./components/GanttChart";
-import "./App.css";
+import "./styles/App.css";
 
 function App() {
   return (
