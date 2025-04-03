@@ -4,7 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/config.js");
-const Task = require("./models/Task");
+const Task = require("./models/task.js");
 
 const app = express();
 app.use(cors());
@@ -18,7 +18,6 @@ app.get("/tasks", async (req, res) => {
     try {
         const tasks = await Task.findAll();
 
-        // Formatear la fecha con `toLocaleDateString`
         const formattedTasks = tasks.map(task => ({
             id: task.id,
             text: task.text,
