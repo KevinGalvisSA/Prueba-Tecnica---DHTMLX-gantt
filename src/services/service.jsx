@@ -1,11 +1,12 @@
 // Functions to communicate with the backend
-const API_URL = "http://localhost:4000/tasks";
+const API_URL = "https://prueba-tecnica-dhtmlx-gantt-production.up.railway.app/tasks";
 
 // Obtener todas las tareas
 export const getTasks = async () => {
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch("https://prueba-tecnica-dhtmlx-gantt-production.up.railway.app/tasks");
     const data = await response.json();
+    console.log(data);
     return data.data || [];
   } catch (error) {
     console.error("Error al obtener tareas:", error);
@@ -16,7 +17,7 @@ export const getTasks = async () => {
 // Crear una nueva tarea
 export const createTask = async (task) => {
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch("https://prueba-tecnica-dhtmlx-gantt-production.up.railway.app/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(task),
@@ -30,7 +31,7 @@ export const createTask = async (task) => {
 // Actualizar una tarea
 export const updateTask = async (id, task) => {
   try {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`https://prueba-tecnica-dhtmlx-gantt-production.up.railway.app/tasks/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(task),
@@ -44,7 +45,7 @@ export const updateTask = async (id, task) => {
 // Eliminar una tarea
 export const deleteTask = async (id) => {
   try {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetch(`https://prueba-tecnica-dhtmlx-gantt-production.up.railway.app/tasks/${id}`, {
       method: "DELETE",
     });
     return await response.json();

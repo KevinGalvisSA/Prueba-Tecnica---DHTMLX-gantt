@@ -21,8 +21,6 @@ app.get("/help", (req, res) => {
 });
 
 // Ruta solicitudes CRUD
-
-// Ruta solicitudes CRUD
 app.use("/tasks", taskRoutes);
 
 app.listen(4000, () => console.log("Servidor corriendo en http://localhost:4000"));
