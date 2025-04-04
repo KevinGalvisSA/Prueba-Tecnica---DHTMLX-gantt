@@ -168,22 +168,9 @@ La API provee los siguientes endpoints para la gestión de tareas:
    ```bash
    npm install
    ```
-3. Configurar la base de datos en el archivo `.env`:
-   ```env
-   DB_USER=
-   DB_PASSWORD=
-   DB_HOST=
-   DB_PORT=
-   DB_NAME=
-   DB_DIALECT=
-   ```
-4. Ejecutar el backend:
+3. Ejecutar el backend:
    ```bash
    npm run api
-   ```
-5. Ejecutar el frontend:
-   ```bash
-   npm run dev
    ```
 
 ---
